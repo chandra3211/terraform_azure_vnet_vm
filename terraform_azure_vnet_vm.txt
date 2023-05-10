@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg1" {
 resource "azurerm_virtual_network" "vnet1" {
     name = "vnet1"
     location = "eastus"
-    resource_group_name = azurerm_resource_group.location
+    resource_group_name = azurerm_resource_group.name
     address_space =["10.10.0.0/16"]
 
     tags {
@@ -24,6 +24,8 @@ resource "azurerm_virtual_machine" "android" {
     location = "eastus"
     resource_group_name = 
     network_interface_ids = [azurerm_network_interface.myinterface.id]
+    virtual_network_name = azurerm_virtual_network.vnet1.name
+    subnet_name = azurerm_subnet.subnet1.name
 
     storage_os_disk {
         name = mydisk
