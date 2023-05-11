@@ -1,3 +1,37 @@
+variable "sec_rules" {
+   type = list(object)
+   defaults =[{
+       name  = "sg1"
+       priority = 100
+       direction = "Inbound"
+       access    = "Allow"
+       source_port_range = 8080
+ },
+ {
+       name  = "sg2"
+       priority = 110
+       direction = "Inbound"
+       source_port_range = 8081
+}]
+
+resource "azurerm_netwrok_security_group" "sg1" {
+     name = "sg1"
+     location = "eastus"
+     resource_group_name = "rg1"
+     dynamic "sg_rule1" {
+        for_each = var.sec_rules
+        content {
+            name = sg_rule1.value["name"]
+            priority = sg_rule1.value["priority"]
+            direction = sg_rule1.value["direction"]
+            access    = sg_rule1.value["source_port_range"]
+   }
+  tags {
+     environment = dev
+   }
+}  
+Note: Dynamic blocks are used to avoid repeatable nested blocks for eg. security groups.
+===========================================================================================================
 resource "azurerm_resource_group" "rg1" {
     name = rg1
     location = "eastus"
